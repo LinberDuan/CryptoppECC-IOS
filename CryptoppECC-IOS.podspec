@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
 
-  s.name         = "CryptoppECC"
+  s.name         = "CryptoppECC-IOS"
   s.version      = "1.0.0"
   s.summary      = "CryptoppECC-Encryption/Decryption using ECC(Elliptic curve cryptography)"
 
@@ -33,7 +33,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/LinberDuan/CryptoppECC-IOS.git", :tag =>"1.0.0" }
   s.source_files  = "CryptoppECC-IOS/CryptoppLibrary/*.h", "CryptoppECC-IOS/CryptoppWrapper/*.{h,mm}"
   s.public_header_files = "CryptoppECC-IOS/CryptoppWrapper/*.h"
-  # s.osx.vendored_library ="CryptoppECC-IOS/CryptoppLibrary/bin/macosx/libcryptopp.a"
+  s.osx.vendored_library ="CryptoppECC-IOS/CryptoppLibrary/bin/macosx/libcryptopp.a"
   s.ios.vendored_library ="CryptoppECC-IOS/CryptoppLibrary/bin/ios/libcryptopp.a"
   s.prefix_header_file ="CryptoppECC-IOS/cryptodemolib.pch"
 
