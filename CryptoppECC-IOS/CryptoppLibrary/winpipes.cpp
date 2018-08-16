@@ -1,21 +1,11 @@
-// winpipes.cpp - originally written and placed in the public domain by Wei Dai
+// winpipes.cpp - written and placed in the public domain by Wei Dai
 
 #include "pch.h"
-#include "config.h"
-
-#if !defined(NO_OS_DEPENDENCE) && defined(WINDOWS_PIPES_AVAILABLE)
-
 #include "winpipes.h"
-#include "wait.h"
 
-// Windows 8, Windows Server 2012, and Windows Phone 8.1 need <synchapi.h> and <ioapiset.h>
-#if defined(CRYPTOPP_WIN32_AVAILABLE)
-# if ((WINVER >= 0x0602 /*_WIN32_WINNT_WIN8*/) || (_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/))
-#  include <synchapi.h>
-#  include <ioapiset.h>
-#  define USE_WINDOWS8_API
-# endif
-#endif
+#ifdef WINDOWS_PIPES_AVAILABLE
+
+#include "wait.h"
 
 NAMESPACE_BEGIN(CryptoPP)
 
@@ -32,9 +22,8 @@ WindowsHandle::~WindowsHandle()
 		{
 			CloseHandle();
 		}
-		catch (const Exception&)
+		catch (...)
 		{
-			CRYPTOPP_ASSERT(0);
 		}
 	}
 }
@@ -89,9 +78,9 @@ WindowsPipe::Err::Err(HANDLE s, const std::string& operation, int error)
 // *************************************************************
 
 WindowsPipeReceiver::WindowsPipeReceiver()
-	: m_lastResult(0), m_resultPending(false), m_eofReceived(false)
+	: m_resultPending(false), m_eofReceived(false)
 {
-	m_event.AttachHandle(CreateEvent(NULLPTR, true, false, NULLPTR), true);
+	m_event.AttachHandle(CreateEvent(NULL, true, false, NULL), true);
 	CheckAndHandleError("CreateEvent", m_event.HandleValid());
 	memset(&m_overlapped, 0, sizeof(m_overlapped));
 	m_overlapped.hEvent = m_event;
@@ -99,9 +88,9 @@ WindowsPipeReceiver::WindowsPipeReceiver()
 
 bool WindowsPipeReceiver::Receive(byte* buf, size_t bufLen)
 {
-	CRYPTOPP_ASSERT(!m_resultPending && !m_eofReceived);
+	assert(!m_resultPending && !m_eofReceived);
 
-	const HANDLE h = GetHandle();
+	HANDLE h = GetHandle();
 	// don't queue too much at once, or we might use up non-paged memory
 	if (ReadFile(h, buf, UnsignedMin((DWORD)128*1024, bufLen), &m_lastResult, &m_overlapped))
 	{
@@ -114,7 +103,6 @@ bool WindowsPipeReceiver::Receive(byte* buf, size_t bufLen)
 		{
 		default:
 			CheckAndHandleError("ReadFile", false);
-			// Fall through for non-fatal
 		case ERROR_BROKEN_PIPE:
 		case ERROR_HANDLE_EOF:
 			m_lastResult = 0;
@@ -139,12 +127,8 @@ unsigned int WindowsPipeReceiver::GetReceiveResult()
 {
 	if (m_resultPending)
 	{
-#if defined(USE_WINDOWS8_API)
-		BOOL result = GetOverlappedResultEx(GetHandle(), &m_overlapped, &m_lastResult, INFINITE, FALSE);
-#else
-		BOOL result = GetOverlappedResult(GetHandle(), &m_overlapped, &m_lastResult, FALSE);
-#endif
-		if (result)
+		HANDLE h = GetHandle();
+		if (GetOverlappedResult(h, &m_overlapped, &m_lastResult, false))
 		{
 			if (m_lastResult == 0)
 				m_eofReceived = true;
@@ -155,7 +139,6 @@ unsigned int WindowsPipeReceiver::GetReceiveResult()
 			{
 			default:
 				CheckAndHandleError("GetOverlappedResult", false);
-				// Fall through for non-fatal
 			case ERROR_BROKEN_PIPE:
 			case ERROR_HANDLE_EOF:
 				m_lastResult = 0;
@@ -170,9 +153,9 @@ unsigned int WindowsPipeReceiver::GetReceiveResult()
 // *************************************************************
 
 WindowsPipeSender::WindowsPipeSender()
-	: m_lastResult(0), m_resultPending(false)
+	: m_resultPending(false), m_lastResult(0)
 {
-	m_event.AttachHandle(CreateEvent(NULLPTR, true, false, NULLPTR), true);
+	m_event.AttachHandle(CreateEvent(NULL, true, false, NULL), true);
 	CheckAndHandleError("CreateEvent", m_event.HandleValid());
 	memset(&m_overlapped, 0, sizeof(m_overlapped));
 	m_overlapped.hEvent = m_event;
@@ -181,7 +164,7 @@ WindowsPipeSender::WindowsPipeSender()
 void WindowsPipeSender::Send(const byte* buf, size_t bufLen)
 {
 	DWORD written = 0;
-	const HANDLE h = GetHandle();
+	HANDLE h = GetHandle();
 	// don't queue too much at once, or we might use up non-paged memory
 	if (WriteFile(h, buf, UnsignedMin((DWORD)128*1024, bufLen), &written, &m_overlapped))
 	{
@@ -209,14 +192,9 @@ unsigned int WindowsPipeSender::GetSendResult()
 {
 	if (m_resultPending)
 	{
-		const HANDLE h = GetHandle();
-#if defined(USE_WINDOWS8_API)
-		BOOL result = GetOverlappedResultEx(h, &m_overlapped, &m_lastResult, INFINITE, FALSE);
-		CheckAndHandleError("GetOverlappedResultEx", result);
-#else
-		BOOL result = GetOverlappedResult(h, &m_overlapped, &m_lastResult, FALSE);
+		HANDLE h = GetHandle();
+		BOOL result = GetOverlappedResult(h, &m_overlapped, &m_lastResult, false);
 		CheckAndHandleError("GetOverlappedResult", result);
-#endif
 		m_resultPending = false;
 	}
 	return m_lastResult;

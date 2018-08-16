@@ -1,4 +1,4 @@
-// authenc.cpp - originally written and placed in the public domain by Wei Dai
+// authenc.cpp - written and placed in the public domain by Wei Dai
 
 #include "pch.h"
 
@@ -50,7 +50,7 @@ void AuthenticatedSymmetricCipherBase::SetKey(const byte *userKey, size_t keylen
 	m_bufferedDataLength = 0;
 	m_state = State_Start;
 
-	this->SetKeyWithoutResync(userKey, keylength, params);
+	SetKeyWithoutResync(userKey, keylength, params);
 	m_state = State_KeySet;
 
 	size_t length;
@@ -74,7 +74,8 @@ void AuthenticatedSymmetricCipherBase::Resynchronize(const byte *iv, int length)
 
 void AuthenticatedSymmetricCipherBase::Update(const byte *input, size_t length)
 {
-	if (length == 0) {return;}
+	if (length == 0)
+		return;
 
 	switch (m_state)
 	{
@@ -96,7 +97,7 @@ void AuthenticatedSymmetricCipherBase::Update(const byte *input, size_t length)
 		m_totalFooterLength += length;
 		break;
 	default:
-		CRYPTOPP_ASSERT(false);
+		assert(false);
 	}
 }
 
@@ -128,7 +129,7 @@ reswitch:
 		AuthenticateData(outString, length);
 		break;
 	default:
-		CRYPTOPP_ASSERT(false);
+		assert(false);
 	}
 }
 
@@ -168,7 +169,7 @@ void AuthenticatedSymmetricCipherBase::TruncatedFinal(byte *mac, size_t macSize)
 		break;
 
 	default:
-		CRYPTOPP_ASSERT(false);
+		assert(false);
 	}
 
 	m_state = State_KeySet;

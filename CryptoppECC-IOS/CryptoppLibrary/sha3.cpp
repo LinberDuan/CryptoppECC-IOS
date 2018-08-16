@@ -19,14 +19,14 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 NAMESPACE_BEGIN(CryptoPP)
 
-static const word64 KeccakF_RoundConstants[24] =
+static const word64 KeccakF_RoundConstants[24] = 
 {
     W64LIT(0x0000000000000001), W64LIT(0x0000000000008082), W64LIT(0x800000000000808a),
     W64LIT(0x8000000080008000), W64LIT(0x000000000000808b), W64LIT(0x0000000080000001),
     W64LIT(0x8000000080008081), W64LIT(0x8000000000008009), W64LIT(0x000000000000008a),
     W64LIT(0x0000000000000088), W64LIT(0x0000000080008009), W64LIT(0x000000008000000a),
     W64LIT(0x000000008000808b), W64LIT(0x800000000000008b), W64LIT(0x8000000000008089),
-    W64LIT(0x8000000000008003), W64LIT(0x8000000000008002), W64LIT(0x8000000000000080),
+    W64LIT(0x8000000000008003), W64LIT(0x8000000000008002), W64LIT(0x8000000000000080), 
     W64LIT(0x000000000000800a), W64LIT(0x800000008000000a), W64LIT(0x8000000080008081),
     W64LIT(0x8000000000008080), W64LIT(0x0000000080000001), W64LIT(0x8000000080008008)
 };
@@ -48,8 +48,8 @@ static void KeccakF1600(word64 *state)
         word64 Esa, Ese, Esi, Eso, Esu;
 
         //copyFromState(A, state)
-        typedef BlockGetAndPut<word64, LittleEndian, true, true> Block;
-        Block::Get(state)(Aba)(Abe)(Abi)(Abo)(Abu)(Aga)(Age)(Agi)(Ago)(Agu)(Aka)(Ake)(Aki)(Ako)(Aku)(Ama)(Ame)(Ami)(Amo)(Amu)(Asa)(Ase)(Asi)(Aso)(Asu);
+		typedef BlockGetAndPut<word64, LittleEndian, true, true> Block;
+		Block::Get(state)(Aba)(Abe)(Abi)(Abo)(Abu)(Aga)(Age)(Agi)(Ago)(Agu)(Aka)(Ake)(Aki)(Ako)(Aku)(Ama)(Ame)(Ami)(Amo)(Amu)(Asa)(Ase)(Asi)(Aso)(Asu);
 
         for( unsigned int round = 0; round < 24; round += 2 )
         {
@@ -61,22 +61,22 @@ static void KeccakF1600(word64 *state)
             BCu = Abu^Agu^Aku^Amu^Asu;
 
             //thetaRhoPiChiIotaPrepareTheta(round  , A, E)
-            Da = BCu^rotlConstant<1>(BCe);
-            De = BCa^rotlConstant<1>(BCi);
-            Di = BCe^rotlConstant<1>(BCo);
-            Do = BCi^rotlConstant<1>(BCu);
-            Du = BCo^rotlConstant<1>(BCa);
+            Da = BCu^rotlFixed(BCe, 1);
+            De = BCa^rotlFixed(BCi, 1);
+            Di = BCe^rotlFixed(BCo, 1);
+            Do = BCi^rotlFixed(BCu, 1);
+            Du = BCo^rotlFixed(BCa, 1);
 
             Aba ^= Da;
             BCa = Aba;
             Age ^= De;
-            BCe = rotlConstant<44>(Age);
+            BCe = rotlFixed(Age, 44);
             Aki ^= Di;
-            BCi = rotlConstant<43>(Aki);
+            BCi = rotlFixed(Aki, 43);
             Amo ^= Do;
-            BCo = rotlConstant<21>(Amo);
+            BCo = rotlFixed(Amo, 21);
             Asu ^= Du;
-            BCu = rotlConstant<14>(Asu);
+            BCu = rotlFixed(Asu, 14);
             Eba =   BCa ^((~BCe)&  BCi );
             Eba ^= (word64)KeccakF_RoundConstants[round];
             Ebe =   BCe ^((~BCi)&  BCo );
@@ -85,15 +85,15 @@ static void KeccakF1600(word64 *state)
             Ebu =   BCu ^((~BCa)&  BCe );
 
             Abo ^= Do;
-            BCa = rotlConstant<28>(Abo);
+            BCa = rotlFixed(Abo, 28);
             Agu ^= Du;
-            BCe = rotlConstant<20>(Agu);
+            BCe = rotlFixed(Agu, 20);
             Aka ^= Da;
-            BCi = rotlConstant<3>(Aka);
+            BCi = rotlFixed(Aka,  3);
             Ame ^= De;
-            BCo = rotlConstant<45>(Ame);
+            BCo = rotlFixed(Ame, 45);
             Asi ^= Di;
-            BCu = rotlConstant<61>(Asi);
+            BCu = rotlFixed(Asi, 61);
             Ega =   BCa ^((~BCe)&  BCi );
             Ege =   BCe ^((~BCi)&  BCo );
             Egi =   BCi ^((~BCo)&  BCu );
@@ -101,15 +101,15 @@ static void KeccakF1600(word64 *state)
             Egu =   BCu ^((~BCa)&  BCe );
 
             Abe ^= De;
-            BCa = rotlConstant<1>(Abe);
+            BCa = rotlFixed(Abe,  1);
             Agi ^= Di;
-            BCe = rotlConstant<6>(Agi);
+            BCe = rotlFixed(Agi,  6);
             Ako ^= Do;
-            BCi = rotlConstant<25>(Ako);
+            BCi = rotlFixed(Ako, 25);
             Amu ^= Du;
-            BCo = rotlConstant<8>(Amu);
+            BCo = rotlFixed(Amu,  8);
             Asa ^= Da;
-            BCu = rotlConstant<18>(Asa);
+            BCu = rotlFixed(Asa, 18);
             Eka =   BCa ^((~BCe)&  BCi );
             Eke =   BCe ^((~BCi)&  BCo );
             Eki =   BCi ^((~BCo)&  BCu );
@@ -117,15 +117,15 @@ static void KeccakF1600(word64 *state)
             Eku =   BCu ^((~BCa)&  BCe );
 
             Abu ^= Du;
-            BCa = rotlConstant<27>(Abu);
+            BCa = rotlFixed(Abu, 27);
             Aga ^= Da;
-            BCe = rotlConstant<36>(Aga);
+            BCe = rotlFixed(Aga, 36);
             Ake ^= De;
-            BCi = rotlConstant<10>(Ake);
+            BCi = rotlFixed(Ake, 10);
             Ami ^= Di;
-            BCo = rotlConstant<15>(Ami);
+            BCo = rotlFixed(Ami, 15);
             Aso ^= Do;
-            BCu = rotlConstant<56>(Aso);
+            BCu = rotlFixed(Aso, 56);
             Ema =   BCa ^((~BCe)&  BCi );
             Eme =   BCe ^((~BCi)&  BCo );
             Emi =   BCi ^((~BCo)&  BCu );
@@ -133,15 +133,15 @@ static void KeccakF1600(word64 *state)
             Emu =   BCu ^((~BCa)&  BCe );
 
             Abi ^= Di;
-            BCa = rotlConstant<62>(Abi);
+            BCa = rotlFixed(Abi, 62);
             Ago ^= Do;
-            BCe = rotlConstant<55>(Ago);
+            BCe = rotlFixed(Ago, 55);
             Aku ^= Du;
-            BCi = rotlConstant<39>(Aku);
+            BCi = rotlFixed(Aku, 39);
             Ama ^= Da;
-            BCo = rotlConstant<41>(Ama);
+            BCo = rotlFixed(Ama, 41);
             Ase ^= De;
-            BCu = rotlConstant<2>(Ase);
+            BCu = rotlFixed(Ase,  2);
             Esa =   BCa ^((~BCe)&  BCi );
             Ese =   BCe ^((~BCi)&  BCo );
             Esi =   BCi ^((~BCo)&  BCu );
@@ -156,22 +156,22 @@ static void KeccakF1600(word64 *state)
             BCu = Ebu^Egu^Eku^Emu^Esu;
 
             //thetaRhoPiChiIotaPrepareTheta(round+1, E, A)
-            Da = BCu^rotlConstant<1>(BCe);
-            De = BCa^rotlConstant<1>(BCi);
-            Di = BCe^rotlConstant<1>(BCo);
-            Do = BCi^rotlConstant<1>(BCu);
-            Du = BCo^rotlConstant<1>(BCa);
+            Da = BCu^rotlFixed(BCe, 1);
+            De = BCa^rotlFixed(BCi, 1);
+            Di = BCe^rotlFixed(BCo, 1);
+            Do = BCi^rotlFixed(BCu, 1);
+            Du = BCo^rotlFixed(BCa, 1);
 
             Eba ^= Da;
             BCa = Eba;
             Ege ^= De;
-            BCe = rotlConstant<44>(Ege);
+            BCe = rotlFixed(Ege, 44);
             Eki ^= Di;
-            BCi = rotlConstant<43>(Eki);
+            BCi = rotlFixed(Eki, 43);
             Emo ^= Do;
-            BCo = rotlConstant<21>(Emo);
+            BCo = rotlFixed(Emo, 21);
             Esu ^= Du;
-            BCu = rotlConstant<14>(Esu);
+            BCu = rotlFixed(Esu, 14);
             Aba =   BCa ^((~BCe)&  BCi );
             Aba ^= (word64)KeccakF_RoundConstants[round+1];
             Abe =   BCe ^((~BCi)&  BCo );
@@ -180,15 +180,15 @@ static void KeccakF1600(word64 *state)
             Abu =   BCu ^((~BCa)&  BCe );
 
             Ebo ^= Do;
-            BCa = rotlConstant<28>(Ebo);
+            BCa = rotlFixed(Ebo, 28);
             Egu ^= Du;
-            BCe = rotlConstant<20>(Egu);
+            BCe = rotlFixed(Egu, 20);
             Eka ^= Da;
-            BCi = rotlConstant<3>(Eka);
+            BCi = rotlFixed(Eka, 3);
             Eme ^= De;
-            BCo = rotlConstant<45>(Eme);
+            BCo = rotlFixed(Eme, 45);
             Esi ^= Di;
-            BCu = rotlConstant<61>(Esi);
+            BCu = rotlFixed(Esi, 61);
             Aga =   BCa ^((~BCe)&  BCi );
             Age =   BCe ^((~BCi)&  BCo );
             Agi =   BCi ^((~BCo)&  BCu );
@@ -196,15 +196,15 @@ static void KeccakF1600(word64 *state)
             Agu =   BCu ^((~BCa)&  BCe );
 
             Ebe ^= De;
-            BCa = rotlConstant<1>(Ebe);
+            BCa = rotlFixed(Ebe, 1);
             Egi ^= Di;
-            BCe = rotlConstant<6>(Egi);
+            BCe = rotlFixed(Egi, 6);
             Eko ^= Do;
-            BCi = rotlConstant<25>(Eko);
+            BCi = rotlFixed(Eko, 25);
             Emu ^= Du;
-            BCo = rotlConstant<8>(Emu);
+            BCo = rotlFixed(Emu, 8);
             Esa ^= Da;
-            BCu = rotlConstant<18>(Esa);
+            BCu = rotlFixed(Esa, 18);
             Aka =   BCa ^((~BCe)&  BCi );
             Ake =   BCe ^((~BCi)&  BCo );
             Aki =   BCi ^((~BCo)&  BCu );
@@ -212,15 +212,15 @@ static void KeccakF1600(word64 *state)
             Aku =   BCu ^((~BCa)&  BCe );
 
             Ebu ^= Du;
-            BCa = rotlConstant<27>(Ebu);
+            BCa = rotlFixed(Ebu, 27);
             Ega ^= Da;
-            BCe = rotlConstant<36>(Ega);
+            BCe = rotlFixed(Ega, 36);
             Eke ^= De;
-            BCi = rotlConstant<10>(Eke);
+            BCi = rotlFixed(Eke, 10);
             Emi ^= Di;
-            BCo = rotlConstant<15>(Emi);
+            BCo = rotlFixed(Emi, 15);
             Eso ^= Do;
-            BCu = rotlConstant<56>(Eso);
+            BCu = rotlFixed(Eso, 56);
             Ama =   BCa ^((~BCe)&  BCi );
             Ame =   BCe ^((~BCi)&  BCo );
             Ami =   BCi ^((~BCo)&  BCu );
@@ -228,15 +228,15 @@ static void KeccakF1600(word64 *state)
             Amu =   BCu ^((~BCa)&  BCe );
 
             Ebi ^= Di;
-            BCa = rotlConstant<62>(Ebi);
+            BCa = rotlFixed(Ebi, 62);
             Ego ^= Do;
-            BCe = rotlConstant<55>(Ego);
+            BCe = rotlFixed(Ego, 55);
             Eku ^= Du;
-            BCi = rotlConstant<39>(Eku);
+            BCi = rotlFixed(Eku, 39);
             Ema ^= Da;
-            BCo = rotlConstant<41>(Ema);
+            BCo = rotlFixed(Ema, 41);
             Ese ^= De;
-            BCu = rotlConstant<2>(Ese);
+            BCu = rotlFixed(Ese, 2);
             Asa =   BCa ^((~BCe)&  BCi );
             Ase =   BCe ^((~BCi)&  BCo );
             Asi =   BCi ^((~BCo)&  BCu );
@@ -245,46 +245,40 @@ static void KeccakF1600(word64 *state)
         }
 
         //copyToState(state, A)
-        Block::Put(NULLPTR, state)(Aba)(Abe)(Abi)(Abo)(Abu)(Aga)(Age)(Agi)(Ago)(Agu)(Aka)(Ake)(Aki)(Ako)(Aku)(Ama)(Ame)(Ami)(Amo)(Amu)(Asa)(Ase)(Asi)(Aso)(Asu);
+		Block::Put(NULL, state)(Aba)(Abe)(Abi)(Abo)(Abu)(Aga)(Age)(Agi)(Ago)(Agu)(Aka)(Ake)(Aki)(Ako)(Aku)(Ama)(Ame)(Ami)(Amo)(Amu)(Asa)(Ase)(Asi)(Aso)(Asu);
     }
 }
 
 void SHA3::Update(const byte *input, size_t length)
 {
-    CRYPTOPP_ASSERT((input && length) || !(input || length));
-    if (!length) { return; }
+	size_t spaceLeft;
+	while (length >= (spaceLeft = r() - m_counter))
+	{
+		xorbuf(m_state.BytePtr() + m_counter, input, spaceLeft);
+		KeccakF1600(m_state);
+		input += spaceLeft;
+		length -= spaceLeft;
+		m_counter = 0;
+	}
 
-    size_t spaceLeft;
-    while (length >= (spaceLeft = r() - m_counter))
-    {
-        if (spaceLeft)
-            xorbuf(m_state.BytePtr() + m_counter, input, spaceLeft);
-        KeccakF1600(m_state);
-        input += spaceLeft;
-        length -= spaceLeft;
-        m_counter = 0;
-    }
-
-    if (length)
-        xorbuf(m_state.BytePtr() + m_counter, input, length);
-    m_counter += (unsigned int)length;
+	xorbuf(m_state.BytePtr() + m_counter, input, length);
+	m_counter += (unsigned int)length;
 }
 
 void SHA3::Restart()
 {
-    memset(m_state, 0, m_state.SizeInBytes());
-    m_counter = 0;
+	memset(m_state, 0, m_state.SizeInBytes());
+	m_counter = 0;
 }
 
 void SHA3::TruncatedFinal(byte *hash, size_t size)
 {
-    ThrowIfInvalidTruncatedSize(size);
-
-    m_state.BytePtr()[m_counter] ^= 0x06;
-    m_state.BytePtr()[r()-1] ^= 0x80;
-    KeccakF1600(m_state);
-    memcpy(hash, m_state, size);
-    Restart();
+	ThrowIfInvalidTruncatedSize(size);
+	m_state.BytePtr()[m_counter] ^= 1;
+	m_state.BytePtr()[r()-1] ^= 0x80;
+	KeccakF1600(m_state);
+	memcpy(hash, m_state, size);
+	Restart();
 }
 
 NAMESPACE_END

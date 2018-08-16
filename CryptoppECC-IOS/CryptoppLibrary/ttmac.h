@@ -1,18 +1,14 @@
 // ttmac.h - written and placed in the public domain by Kevin Springle
 
-/// \file ttmac.h
-/// \brief Classes for the TTMAC message authentication code
-
 #ifndef CRYPTOPP_TTMAC_H
 #define CRYPTOPP_TTMAC_H
 
 #include "seckey.h"
 #include "iterhash.h"
-#include "secblock.h"
 
 NAMESPACE_BEGIN(CryptoPP)
 
-/// \brief TTMAC message authentication code information
+//! _
 class CRYPTOPP_NO_VTABLE TTMAC_Base : public FixedKeyLength<20>, public IteratedHash<word32, LittleEndian, 64, MessageAuthenticationCode>
 {
 public:
@@ -33,10 +29,8 @@ protected:
 	FixedSizeSecBlock<word32, 5> m_key;
 };
 
-/// \brief Two-Track-MAC message authentication code
-/// \tparam T HashTransformation class
-/// \details 160-bit MAC with 160-bit key
-/// \sa MessageAuthenticationCode(), <a href="http://www.weidai.com/scan-mirror/mac.html#TTMAC">Two-Track-MAC</a>
+//! <a href="http://www.weidai.com/scan-mirror/mac.html#TTMAC">Two-Track-MAC</a>
+/*! 160 Bit MAC with 160 Bit Key */
 DOCUMENTED_TYPEDEF(MessageAuthenticationCodeFinal<TTMAC_Base>, TTMAC)
 
 NAMESPACE_END

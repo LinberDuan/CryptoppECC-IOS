@@ -1,7 +1,6 @@
 #ifndef CRYPTOPP_WORDS_H
 #define CRYPTOPP_WORDS_H
 
-#include "config.h"
 #include "misc.h"
 
 NAMESPACE_BEGIN(CryptoPP)
@@ -22,11 +21,7 @@ inline void SetWords(word *r, word a, size_t n)
 inline void CopyWords(word *r, const word *a, size_t n)
 {
 	if (r != a)
-#if CRYPTOPP_MSC_VERSION
-		memcpy_s(r, n*WORD_SIZE, a, n*WORD_SIZE);
-#else
 		memcpy(r, a, n*WORD_SIZE);
-#endif
 }
 
 inline void XorWords(word *r, const word *a, const word *b, size_t n)
@@ -53,21 +48,9 @@ inline void AndWords(word *r, const word *a, size_t n)
 		r[i] &= a[i];
 }
 
-inline void OrWords(word *r, const word *a, const word *b, size_t n)
-{
-	for (size_t i=0; i<n; i++)
-		r[i] = a[i] | b[i];
-}
-
-inline void OrWords(word *r, const word *a, size_t n)
-{
-	for (size_t i=0; i<n; i++)
-		r[i] |= a[i];
-}
-
 inline word ShiftWordsLeftByBits(word *r, size_t n, unsigned int shiftBits)
 {
-	CRYPTOPP_ASSERT (shiftBits<WORD_BITS);
+	assert (shiftBits<WORD_BITS);
 	word u, carry=0;
 	if (shiftBits)
 		for (size_t i=0; i<n; i++)
@@ -81,7 +64,7 @@ inline word ShiftWordsLeftByBits(word *r, size_t n, unsigned int shiftBits)
 
 inline word ShiftWordsRightByBits(word *r, size_t n, unsigned int shiftBits)
 {
-	CRYPTOPP_ASSERT (shiftBits<WORD_BITS);
+	assert (shiftBits<WORD_BITS);
 	word u, carry=0;
 	if (shiftBits)
 		for (size_t i=n; i>0; i--)
