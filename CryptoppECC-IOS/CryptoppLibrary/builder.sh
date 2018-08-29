@@ -59,54 +59,54 @@ do
 done
 
 
-############################################################
-echo "making for macOSX"
-ARCHS="x86_64 i386"
-SDK_VERSION=`xcrun --sdk macosx --show-sdk-version 2> /dev/null`
-MIN_SDK_VERSION=10.10
-PLATFORM="MacOSX"
+# ############################################################
+# echo "making for macOSX"
+# ARCHS="x86_64 i386"
+# SDK_VERSION=`xcrun --sdk macosx --show-sdk-version 2> /dev/null`
+# MIN_SDK_VERSION=10.10
+# PLATFORM="MacOSX"
 
 
-echo "sdk version is: "
-echo ${SDK_VERSION}
+# echo "sdk version is: "
+# echo ${SDK_VERSION}
 
 
-MACOSX_STATIC_ARCHIVES=""
-for ARCH in ${ARCHS}
-do
+# MACOSX_STATIC_ARCHIVES=""
+# for ARCH in ${ARCHS}
+# do
 
-export DEV_ROOT="${XCODE_ROOT}/Platforms/${PLATFORM}.platform/Developer"
-export SDK_ROOT="${DEV_ROOT}/SDKs/${PLATFORM}${SDK_VERSION}.sdk"
-export TOOLCHAIN_ROOT="${XCODE_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/bin/"
-export CC="clang -arch $ARCH -fembed-bitcode"
-export CXX=clang++
-export AR=${TOOLCHAIN_ROOT}libtool
-export RANLIB=${TOOLCHAIN_ROOT}ranlib
-export ARFLAGS="-static -o"
-export LDFLAGS="-arch ${ARCH} -isysroot ${SDK_ROOT}"
-export BUILD_PATH="MACOSX_BUILD_${ARCH}"
-export CXXFLAGS="-x c++ -arch ${ARCH} -isysroot ${SDK_ROOT} -I${BUILD_PATH} -mmacosx-version-min=${MIN_SDK_VERSION}"
+# export DEV_ROOT="${XCODE_ROOT}/Platforms/${PLATFORM}.platform/Developer"
+# export SDK_ROOT="${DEV_ROOT}/SDKs/${PLATFORM}${SDK_VERSION}.sdk"
+# export TOOLCHAIN_ROOT="${XCODE_ROOT}/Toolchains/XcodeDefault.xctoolchain/usr/bin/"
+# export CC="clang -arch $ARCH -fembed-bitcode"
+# export CXX=clang++
+# export AR=${TOOLCHAIN_ROOT}libtool
+# export RANLIB=${TOOLCHAIN_ROOT}ranlib
+# export ARFLAGS="-static -o"
+# export LDFLAGS="-arch ${ARCH} -isysroot ${SDK_ROOT}"
+# export BUILD_PATH="MACOSX_BUILD_${ARCH}"
+# export CXXFLAGS="-x c++ -arch ${ARCH} -isysroot ${SDK_ROOT} -I${BUILD_PATH} -mmacosx-version-min=${MIN_SDK_VERSION}"
 
-mkdir -pv ${BUILD_PATH}
-make -f Makefile
-mv *.o ${BUILD_PATH}
-mv *.d ${BUILD_PATH}
-mv libcryptopp.a ${BUILD_PATH}
+# mkdir -pv ${BUILD_PATH}
+# make -f Makefile
+# mv *.o ${BUILD_PATH}
+# mv *.d ${BUILD_PATH}
+# mv libcryptopp.a ${BUILD_PATH}
 
-MACOSX_STATIC_ARCHIVES="${MACOSX_STATIC_ARCHIVES} ${BUILD_PATH}/libcryptopp.a"
+# MACOSX_STATIC_ARCHIVES="${MACOSX_STATIC_ARCHIVES} ${BUILD_PATH}/libcryptopp.a"
 
-done
+# done
 
-echo "Creating universal library..."
-mkdir -p bin/macosx
-lipo -create ${MACOSX_STATIC_ARCHIVES} -output bin/macosx/libcryptopp.a
+# echo "Creating universal library..."
+# mkdir -p bin/macosx
+# lipo -create ${MACOSX_STATIC_ARCHIVES} -output bin/macosx/libcryptopp.a
 
-echo "removing thin archs"
-for ARCH in ${ARCHS}
-do
+# echo "removing thin archs"
+# for ARCH in ${ARCHS}
+# do
 
-directoryName=MACOSX_BUILD_${ARCH}
-rm -rf ${directoryName}
+# directoryName=MACOSX_BUILD_${ARCH}
+# rm -rf ${directoryName}
 
 done
 

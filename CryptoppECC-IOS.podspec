@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CryptoppECC-IOS"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "CryptoppECC-IOS-Encryption/Decryption using ECC(Elliptic curve cryptography)"
 
   # This description is used to generate tags and improve search results.
@@ -64,7 +64,7 @@ Pod::Spec.new do |s|
   #
 
   # s.platform     = :ios
-  # s.platform     = :ios, "5.0"
+  s.platform     = :ios, "6.0"
 
   #  When using multiple platforms
   # s.ios.deployment_target = "5.0"
@@ -79,7 +79,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/LinberDuan/CryptoppECC-IOS.git", :tag => "1.0.0" }
+  s.source       = { :git => "https://github.com/LinberDuan/CryptoppECC-IOS.git", :tag => "1.0.2" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -94,7 +94,7 @@ Pod::Spec.new do |s|
   # s.exclude_files = "Classes/Exclude"
 
   s.public_header_files = "CryptoppECC-IOS/CryptoppWrapper/*.h"
-  s.vendored_library ="CryptoppECC-IOS/CryptoppLibrary/bin/ios/libcryptopp.a"
+  # s.vendored_library ="CryptoppECC-IOS/CryptoppLibrary/bin/ios/libcryptopp.a"
   s.prefix_header_file ="CryptoppECC-IOS/cryptodemolib.pch"
 
 
