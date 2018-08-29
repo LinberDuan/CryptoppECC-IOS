@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "CryptoppECC-IOS"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "CryptoppECC-IOS-Encryption/Decryption using ECC(Elliptic curve cryptography)"
 
   # This description is used to generate tags and improve search results.
@@ -134,6 +134,6 @@ Pod::Spec.new do |s|
   # s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # s.dependency "JSONKit", "~> 1.4"
+  # s.dependency "JSONKit", "~> 1.5"
 
 end
