@@ -1,11 +1,11 @@
 #!/bin/bash
 
-cd CryptoppECC/CryptoppLibrary
+cd CryptoppECC-IOS/CryptoppLibrary
 
 XCODE_ROOT=`xcode-select -print-path`
 
 echo "making for iOS"
-ARCHS="x86_64 i386 armv7 arm64"
+ARCHS="x86_64 i386 armv7 armv7s arm64"
 SDK_VERSION=`xcrun --sdk iphoneos --show-sdk-version 2> /dev/null`
 MIN_SDK_VERSION=7.0
 
